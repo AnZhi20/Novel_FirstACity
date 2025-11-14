@@ -14,6 +14,7 @@ namespace FirstACity
         private System.Windows.Forms.ToolStripMenuItem 应用设置ToolStripMenuItem;
         private System.Windows.Forms.TabControl 分类标签控件;
         private System.Windows.Forms.TabPage 总览标签页;
+        private System.Windows.Forms.TabPage 统计标签页;
         private System.Windows.Forms.TabPage 事件标签页;
         private System.Windows.Forms.TabPage 仓库标签页;
         private System.Windows.Forms.TabPage 配方蓝图标签页;
@@ -49,6 +50,7 @@ namespace FirstACity
             this.应用设置ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.分类标签控件 = new System.Windows.Forms.TabControl();
             this.总览标签页 = new System.Windows.Forms.TabPage();
+            this.统计标签页 = new System.Windows.Forms.TabPage();
             this.事件标签页 = new System.Windows.Forms.TabPage();
             this.仓库标签页 = new System.Windows.Forms.TabPage();
             this.配方蓝图标签页 = new System.Windows.Forms.TabPage();
@@ -113,6 +115,7 @@ namespace FirstACity
             // 分类标签控件
             // 
             this.分类标签控件.Controls.Add(this.总览标签页);
+            this.分类标签控件.Controls.Add(this.统计标签页);
             this.分类标签控件.Controls.Add(this.事件标签页);
             this.分类标签控件.Controls.Add(this.仓库标签页);
             this.分类标签控件.Controls.Add(this.配方蓝图标签页);
@@ -136,13 +139,23 @@ namespace FirstACity
             this.总览标签页.Text = "总览";
             this.总览标签页.UseVisualStyleBackColor = true;
             // 
+            // 统计标签页
+            // 
+            this.统计标签页.Location = new System.Drawing.Point(4, 22);
+            this.统计标签页.Name = "统计标签页";
+            this.统计标签页.Padding = new System.Windows.Forms.Padding(3);
+            this.统计标签页.Size = new System.Drawing.Size(1352, 901);
+            this.统计标签页.TabIndex = 1;
+            this.统计标签页.Text = "统计";
+            this.统计标签页.UseVisualStyleBackColor = true;
+            // 
             // 事件标签页
             // 
             this.事件标签页.Location = new System.Drawing.Point(4, 22);
             this.事件标签页.Name = "事件标签页";
             this.事件标签页.Padding = new System.Windows.Forms.Padding(3);
             this.事件标签页.Size = new System.Drawing.Size(1352, 901);
-            this.事件标签页.TabIndex = 1;
+            this.事件标签页.TabIndex = 2;
             this.事件标签页.Text = "事件";
             this.事件标签页.UseVisualStyleBackColor = true;
             // 
@@ -152,7 +165,7 @@ namespace FirstACity
             this.仓库标签页.Name = "仓库标签页";
             this.仓库标签页.Padding = new System.Windows.Forms.Padding(3);
             this.仓库标签页.Size = new System.Drawing.Size(1352, 901);
-            this.仓库标签页.TabIndex = 2;
+            this.仓库标签页.TabIndex = 3;
             this.仓库标签页.Text = "仓库";
             this.仓库标签页.UseVisualStyleBackColor = true;
             // 
@@ -162,7 +175,7 @@ namespace FirstACity
             this.配方蓝图标签页.Name = "配方蓝图标签页";
             this.配方蓝图标签页.Padding = new System.Windows.Forms.Padding(3);
             this.配方蓝图标签页.Size = new System.Drawing.Size(1352, 901);
-            this.配方蓝图标签页.TabIndex = 3;
+            this.配方蓝图标签页.TabIndex = 4;
             this.配方蓝图标签页.Text = "配方蓝图";
             this.配方蓝图标签页.UseVisualStyleBackColor = true;
             // 
@@ -172,7 +185,7 @@ namespace FirstACity
             this.地图标签页.Name = "地图标签页";
             this.地图标签页.Padding = new System.Windows.Forms.Padding(3);
             this.地图标签页.Size = new System.Drawing.Size(1352, 901);
-            this.地图标签页.TabIndex = 4;
+            this.地图标签页.TabIndex = 5;
             this.地图标签页.Text = "地图";
             this.地图标签页.UseVisualStyleBackColor = true;
             // 
@@ -182,7 +195,7 @@ namespace FirstACity
             this.副本标签页.Name = "副本标签页";
             this.副本标签页.Padding = new System.Windows.Forms.Padding(3);
             this.副本标签页.Size = new System.Drawing.Size(1352, 901);
-            this.副本标签页.TabIndex = 5;
+            this.副本标签页.TabIndex = 6;
             this.副本标签页.Text = "副本";
             this.副本标签页.UseVisualStyleBackColor = true;
             // 

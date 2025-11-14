@@ -128,6 +128,12 @@ namespace FirstACity
                 Initialize总览标签页();
             }
 
+            // 确保统计标签页已初始化
+            if (统计标签页.Controls.Count == 0)
+            {
+                Initialize统计标签页();
+            }
+
             // 确保事件标签页已初始化
             if (事件标签页.Controls.Count == 0)
             {
@@ -147,12 +153,551 @@ namespace FirstACity
             }
         }
 
+        // 初始化统计标签页
+        private void Initialize统计标签页()
+        {
+            // 设置标签页布局
+            统计标签页.SuspendLayout();
+
+            // 章节选择部分
+            GroupBox chapterGroup = new GroupBox();
+            chapterGroup.Name = "chapterGroup";
+            chapterGroup.Location = new Point(10, 10);
+            chapterGroup.Size = new Size(统计标签页.ClientSize.Width - 20, 60);
+            chapterGroup.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            chapterGroup.Text = "章节选择";
+            // 移除绿色背景
+
+            // "选择章节：" 标签
+            Label chapterLabel = new Label();
+            chapterLabel.Location = new Point(20, 25);
+            chapterLabel.Size = new Size(80, 20);
+            chapterLabel.Text = "选择章节：";
+
+            // 文本输入框
+            TextBox chapterTextBox = new TextBox();
+            chapterTextBox.Name = "chapterTextBox";
+            chapterTextBox.Location = new Point(100, 22);
+            chapterTextBox.Size = new Size(chapterGroup.ClientSize.Width - 200, 25);
+            chapterTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+
+            // 搜索按钮
+            Button searchButton = new Button();
+            searchButton.Name = "searchButton";
+            searchButton.Location = new Point(chapterGroup.ClientSize.Width - 100, 20);
+            searchButton.Size = new Size(80, 30);
+            searchButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            searchButton.Text = "搜索";
+            searchButton.Click += new EventHandler(SearchButton_Click);
+
+            // 将控件添加到章节选择组
+            chapterGroup.Controls.Add(chapterLabel);
+            chapterGroup.Controls.Add(chapterTextBox);
+            chapterGroup.Controls.Add(searchButton);
+
+            // 统计数据部分 - 使用面板布局
+            Panel statsPanel = new Panel();
+            statsPanel.Location = new Point(10, 80);
+            statsPanel.Size = new Size(统计标签页.ClientSize.Width - 20, 统计标签页.ClientSize.Height - 100);
+            statsPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            statsPanel.AutoScroll = true;
+            // 移除红色背景
+
+            // 获得物品区域
+            GroupBox acquiredGroup = new GroupBox();
+            acquiredGroup.Location = new Point(10, 10);
+            acquiredGroup.Size = new Size(statsPanel.ClientSize.Width - 20, 200);
+            acquiredGroup.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            acquiredGroup.Text = "获得物品";
+
+            // 为获得物品标签添加滚动功能
+            Panel acquiredScrollPanel = new Panel();
+            acquiredScrollPanel.Location = new Point(20, 25);
+            acquiredScrollPanel.Size = new Size(acquiredGroup.ClientSize.Width - 40, acquiredGroup.ClientSize.Height - 50);
+            acquiredScrollPanel.AutoScroll = true;
+            acquiredScrollPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+
+            Label acquiredItemsLabel = new Label();
+            acquiredItemsLabel.Name = "acquiredItemsLabel";
+            acquiredItemsLabel.Location = new Point(0, 0);
+            acquiredItemsLabel.Size = new Size(acquiredScrollPanel.ClientSize.Width - 20, 70);
+            acquiredItemsLabel.Text = "总数：0\n";
+            acquiredItemsLabel.Font = new Font("微软雅黑", 10);
+            acquiredItemsLabel.AutoSize = true; // 允许标签自动调整大小
+            acquiredItemsLabel.TextAlign = ContentAlignment.TopLeft;
+
+            acquiredScrollPanel.Controls.Add(acquiredItemsLabel);
+            acquiredGroup.Controls.Add(acquiredScrollPanel);
+
+            // 消耗物品区域
+            GroupBox consumedGroup = new GroupBox();
+            consumedGroup.Location = new Point(10, 220);
+            consumedGroup.Size = new Size(statsPanel.ClientSize.Width - 20, 200);
+            consumedGroup.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            consumedGroup.Text = "消耗物品";
+
+            // 为消耗物品标签添加滚动功能
+            Panel consumedScrollPanel = new Panel();
+            consumedScrollPanel.Location = new Point(20, 25);
+            consumedScrollPanel.Size = new Size(consumedGroup.ClientSize.Width - 40, consumedGroup.ClientSize.Height - 50);
+            consumedScrollPanel.AutoScroll = true;
+            consumedScrollPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+
+            Label consumedItemsLabel = new Label();
+            consumedItemsLabel.Name = "consumedItemsLabel";
+            consumedItemsLabel.Location = new Point(0, 0);
+            consumedItemsLabel.Size = new Size(consumedScrollPanel.ClientSize.Width - 20, 70);
+            consumedItemsLabel.Text = "总数：0\n";
+            consumedItemsLabel.Font = new Font("微软雅黑", 10);
+            consumedItemsLabel.AutoSize = true; // 允许标签自动调整大小
+            consumedItemsLabel.TextAlign = ContentAlignment.TopLeft;
+
+            consumedScrollPanel.Controls.Add(consumedItemsLabel);
+            consumedGroup.Controls.Add(consumedScrollPanel);
+
+            // 副本和蓝图统计区域
+            GroupBox activitiesGroup = new GroupBox();
+            activitiesGroup.Location = new Point(10, 430);
+            activitiesGroup.Size = new Size(statsPanel.ClientSize.Width - 20, 100);
+            activitiesGroup.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            activitiesGroup.Text = "活动统计";
+
+            Label dungeonParticipationLabel = new Label();
+            dungeonParticipationLabel.Name = "dungeonParticipationLabel";
+            dungeonParticipationLabel.Location = new Point(20, 25);
+            dungeonParticipationLabel.Size = new Size(250, 30);
+            dungeonParticipationLabel.Text = "参与副本：0次";
+            dungeonParticipationLabel.Font = new Font("微软雅黑", 10);
+
+            Label blueprintUsageLabel = new Label();
+            blueprintUsageLabel.Name = "blueprintUsageLabel";
+            blueprintUsageLabel.Location = new Point(300, 25);
+            blueprintUsageLabel.Size = new Size(250, 30);
+            blueprintUsageLabel.Text = "使用蓝图：0次";
+            blueprintUsageLabel.Font = new Font("微软雅黑", 10);
+
+            activitiesGroup.Controls.Add(dungeonParticipationLabel);
+            activitiesGroup.Controls.Add(blueprintUsageLabel);
+
+            // 将所有统计组添加到统计面板
+            statsPanel.Controls.Add(acquiredGroup);
+            statsPanel.Controls.Add(consumedGroup);
+            statsPanel.Controls.Add(activitiesGroup);
+
+            // 将所有控件添加到统计标签页
+            统计标签页.Controls.Add(chapterGroup);
+            统计标签页.Controls.Add(statsPanel);
+
+            // 添加窗口大小改变事件处理
+            this.SizeChanged += new EventHandler(Form_SizeChanged);
+
+            统计标签页.ResumeLayout(false);
+        }
+
+        // 窗口大小改变事件处理
+        private void Form_SizeChanged(object sender, EventArgs e)
+        {
+            // 确保统计标签页已初始化
+            if (统计标签页.Controls.Count > 0)
+            {
+                // 获取并调整章节选择组
+                GroupBox chapterGroup = 统计标签页.Controls.Find("chapterGroup", false).FirstOrDefault() as GroupBox;
+                if (chapterGroup != null)
+                {
+                    chapterGroup.Size = new Size(统计标签页.ClientSize.Width - 20, 60);
+                    
+                    // 调整文本框大小
+                    TextBox chapterTextBox = chapterGroup.Controls.Find("chapterTextBox", false).FirstOrDefault() as TextBox;
+                    if (chapterTextBox != null)
+                    {
+                        chapterTextBox.Size = new Size(chapterGroup.ClientSize.Width - 200, 25);
+                    }
+                    
+                    // 调整搜索按钮位置
+                    Button searchButton = chapterGroup.Controls.Find("searchButton", false).FirstOrDefault() as Button;
+                    if (searchButton != null)
+                    {
+                        searchButton.Location = new Point(chapterGroup.ClientSize.Width - 100, 20);
+                    }
+                }
+                
+                // 获取并调整统计面板
+                Panel statsPanel = 统计标签页.Controls.OfType<Panel>().FirstOrDefault(p => p.AutoScroll);
+                if (statsPanel != null)
+                {
+                    statsPanel.Size = new Size(统计标签页.ClientSize.Width - 20, 统计标签页.ClientSize.Height - 100);
+                    
+                    // 调整各个组的宽度
+                    foreach (GroupBox groupBox in statsPanel.Controls.OfType<GroupBox>())
+                    {
+                        groupBox.Size = new Size(statsPanel.ClientSize.Width - 20, groupBox.Size.Height);
+                        
+                        // 调整滚动面板大小
+                        foreach (Panel scrollPanel in groupBox.Controls.OfType<Panel>().Where(p => p.AutoScroll))
+                        {
+                            scrollPanel.Size = new Size(groupBox.ClientSize.Width - 40, groupBox.ClientSize.Height - 50);
+                        }
+                    }
+                }
+            }
+        }
+        
+        // 搜索按钮点击事件处理程序
+        private void SearchButton_Click(object sender, EventArgs e)
+        {
+            TextBox chapterTextBox = 统计标签页.Controls.Find("chapterTextBox", true).FirstOrDefault() as TextBox;
+            if (chapterTextBox != null)
+            {
+                string chapter = chapterTextBox.Text?.Trim();
+                // 更新统计数据（支持按章节过滤）
+                UpdateStatistics(chapter);
+            }
+            else
+            {
+                MessageBox.Show("未找到章节输入框", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // 更新统计数据
+        private void UpdateStatistics(string chapter = null)
+        {
+            // 获取事件页面的DataGridView控件
+            DataGridView eventGrid = 事件标签页.Controls.Find("eventDataGridView", true).FirstOrDefault() as DataGridView;
+            if (eventGrid == null || eventGrid.Rows.Count == 0)
+            {
+                // 如果没有事件数据，显示空数据
+                ClearStatisticsLabels();
+                return;
+            }
+
+            // 统计数据容器
+            Dictionary<string, int> acquiredItems = new Dictionary<string, int>();
+            Dictionary<string, int> consumedItems = new Dictionary<string, int>();
+            int dungeonParticipations = 0;
+            int blueprintUsages = 0;
+
+            // 遍历事件数据进行统计
+            foreach (DataGridViewRow row in eventGrid.Rows)
+            {
+                if (row.IsNewRow) continue;
+
+                // 章节过滤
+                if (!string.IsNullOrEmpty(chapter))
+                {
+                    string rowChapter = row.Cells[0]?.Value?.ToString()?.Trim() ?? "";
+                    if (rowChapter != chapter)
+                        continue; // 跳过不匹配的章节
+                }
+
+                // 统计物品信息
+                string itemWithStatus = row.Cells["itemColumn"]?.Value?.ToString()?.Trim() ?? "";
+                // 排除空值和"无"的情况
+                if (!string.IsNullOrEmpty(itemWithStatus) && itemWithStatus != "无")
+                {
+                    string itemName = itemWithStatus;
+                    bool isConsumed = false;
+                    int itemQuantity = 1; // 默认数量为1
+
+                    // 解析物品数量（格式为"钛矿(增加)x10"或"钛矿x10"）
+                    if (itemWithStatus.Contains("x"))
+                    {
+                        int xIndex = itemWithStatus.LastIndexOf('x');
+                        string quantityPart = itemWithStatus.Substring(xIndex + 1).Trim();
+                        if (int.TryParse(quantityPart, out int quantity))
+                        {
+                            itemQuantity = quantity;
+                            itemWithStatus = itemWithStatus.Substring(0, xIndex).Trim();
+                        }
+                    }
+
+                    // 解析物品名称和状态（格式为"钛矿(增加)"）
+                    if (itemWithStatus.Contains("("))
+                    {
+                        int startIndex = itemWithStatus.LastIndexOf('(');
+                        int endIndex = itemWithStatus.LastIndexOf(')');
+                        if (startIndex >= 0 && endIndex > startIndex)
+                        {
+                            itemName = itemWithStatus.Substring(0, startIndex).Trim();
+                            string statusText = itemWithStatus.Substring(startIndex + 1, endIndex - startIndex - 1).Trim();
+                            isConsumed = (statusText == "减少");
+                        }
+                    }
+                    else
+                    {
+                        // 如果没有括号，则整个字符串就是物品名称
+                        itemName = itemWithStatus;
+                    }
+
+                    // 处理蓝图相关的物品消耗和获得
+                    string blueprintUsedForItem = row.Cells["blueprintColumn"]?.Value?.ToString()?.Trim() ?? "";
+                    string dungeonParticipatedForItem = row.Cells["dungeonColumn"]?.Value?.ToString()?.Trim() ?? "";
+                    
+                    // 计算实际数量（考虑蓝图或副本的次数和对应的消耗/获取数量）
+                    int actualQuantity = itemQuantity;
+                    
+                    // 如果使用了蓝图，计算蓝图次数和对应的消耗/获取数量
+                    if (!string.IsNullOrEmpty(blueprintUsedForItem) && blueprintUsedForItem != "无")
+                    {
+                        // 获取蓝图名称和次数
+                        string blueprintName = blueprintUsedForItem;
+                        int blueprintQuantity = 1;
+                        
+                        if (blueprintUsedForItem.Contains("x"))
+                        {
+                            int xIndex = blueprintUsedForItem.LastIndexOf('x');
+                            blueprintName = blueprintUsedForItem.Substring(0, xIndex).Trim();
+                            string quantityPart = blueprintUsedForItem.Substring(xIndex + 1).Trim();
+                            if (int.TryParse(quantityPart, out blueprintQuantity))
+                            {
+                                // 获取蓝图对应的消耗和获取数量
+                                DataGridView blueprintDataGridView = 配方蓝图标签页.Controls.Find("blueprintDataGridView", true).FirstOrDefault() as DataGridView;
+                                if (blueprintDataGridView != null)
+                                {
+                                    foreach (DataGridViewRow blueprintRow in blueprintDataGridView.Rows)
+                                    {
+                                        if (blueprintRow.Cells["nameColumn"].Value?.ToString() == blueprintName)
+                                        {
+                                            // 根据物品是消耗还是获得，查找对应的材料信息
+                                            string materialsColumn = isConsumed ? "consumedMaterialsColumn" : "producedMaterialsColumn";
+                                            string materialsInfo = blueprintRow.Cells[materialsColumn].Value?.ToString() ?? "";
+                                            
+                                            if (!string.IsNullOrEmpty(materialsInfo))
+                                            {
+                                                string[] materialItems = materialsInfo.Split(new char[] { '、' }, StringSplitOptions.RemoveEmptyEntries);
+                                                foreach (string material in materialItems)
+                                                {
+                                                    int xMatIndex = material.LastIndexOf('x');
+                                                    if (xMatIndex > 0 && xMatIndex < material.Length - 1)
+                                                    {
+                                                        string materialName = material.Substring(0, xMatIndex).Trim();
+                                                        if (materialName == itemName)
+                                                        {
+                                                            if (int.TryParse(material.Substring(xMatIndex + 1).Trim(), out int materialQuantity))
+                                                            {
+                                                                // 计算实际数量 = 材料数量 * 蓝图次数
+                                                                actualQuantity = materialQuantity * blueprintQuantity;
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    // 如果参与了副本，计算副本次数和对应的消耗/获取数量
+                    else if (!string.IsNullOrEmpty(dungeonParticipatedForItem) && dungeonParticipatedForItem != "无")
+                    {
+                        // 获取副本名称和次数
+                        string dungeonName = dungeonParticipatedForItem;
+                        int dungeonQuantity = 1;
+                        
+                        if (dungeonParticipatedForItem.Contains("x"))
+                        {
+                            int xIndex = dungeonParticipatedForItem.LastIndexOf('x');
+                            dungeonName = dungeonParticipatedForItem.Substring(0, xIndex).Trim();
+                            string quantityPart = dungeonParticipatedForItem.Substring(xIndex + 1).Trim();
+                            if (int.TryParse(quantityPart, out dungeonQuantity))
+                            {
+                                // 获取副本对应的消耗和获取数量
+                                DataGridView dungeonDataGridView = 副本标签页.Controls.Find("dungeonDataGridView", true).FirstOrDefault() as DataGridView;
+                                if (dungeonDataGridView != null)
+                                {
+                                    foreach (DataGridViewRow dungeonRow in dungeonDataGridView.Rows)
+                                    {
+                                        if (dungeonRow.Cells["nameColumn"].Value?.ToString() == dungeonName)
+                                        {
+                                            // 根据物品是消耗还是获得，查找对应的物品信息
+                                            string itemsColumn = isConsumed ? "consumedItemsColumn" : "obtainedItemsColumn";
+                                            string itemsInfo = dungeonRow.Cells[itemsColumn].Value?.ToString() ?? "";
+                                            
+                                            if (!string.IsNullOrEmpty(itemsInfo))
+                                            {
+                                                string[] itemEntries = itemsInfo.Split(new char[] { '、' }, StringSplitOptions.RemoveEmptyEntries);
+                                                foreach (string itemEntry in itemEntries)
+                                                {
+                                                    int xItemIndex = itemEntry.LastIndexOf('x');
+                                                    if (xItemIndex > 0 && xItemIndex < itemEntry.Length - 1)
+                                                    {
+                                                        string entryItemName = itemEntry.Substring(0, xItemIndex).Trim();
+                                                        if (entryItemName == itemName)
+                                                        {
+                                                            if (int.TryParse(itemEntry.Substring(xItemIndex + 1).Trim(), out int itemEntryQuantity))
+                                                            {
+                                                                // 计算实际数量 = 物品数量 * 副本次数
+                                                                actualQuantity = itemEntryQuantity * dungeonQuantity;
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    // 统计物品
+                    if (isConsumed)
+                    {
+                        if (consumedItems.ContainsKey(itemName))
+                            consumedItems[itemName] += actualQuantity;
+                        else
+                            consumedItems[itemName] = actualQuantity;
+                    }
+                    else
+                    {
+                        if (acquiredItems.ContainsKey(itemName))
+                            acquiredItems[itemName] += actualQuantity;
+                        else
+                            acquiredItems[itemName] = actualQuantity;
+                    }
+                }
+
+                // 统计副本参与
+                string dungeonParticipated = row.Cells["dungeonColumn"]?.Value?.ToString()?.Trim() ?? "";
+                if (!string.IsNullOrEmpty(dungeonParticipated) && dungeonParticipated != "无")
+                {
+                    // 解析副本参与次数（格式为"副本名称 x次数"）
+                    if (dungeonParticipated.Contains("x"))
+                    {
+                        int xIndex = dungeonParticipated.LastIndexOf('x');
+                        string quantityPart = dungeonParticipated.Substring(xIndex + 1).Trim();
+                        if (int.TryParse(quantityPart, out int quantity))
+                        {
+                            dungeonParticipations += quantity;
+                        }
+                        else
+                        {
+                            dungeonParticipations++;
+                        }
+                    }
+                    else
+                    {
+                        dungeonParticipations++;
+                    }
+                }
+
+                // 统计蓝图使用
+                string blueprintUsed = row.Cells["blueprintColumn"]?.Value?.ToString()?.Trim() ?? "";
+                if (!string.IsNullOrEmpty(blueprintUsed) && blueprintUsed != "无")
+                {
+                    // 解析蓝图使用次数（格式为"蓝图名称 x次数"）
+                    if (blueprintUsed.Contains("x"))
+                    {
+                        int xIndex = blueprintUsed.LastIndexOf('x');
+                        string quantityPart = blueprintUsed.Substring(xIndex + 1).Trim();
+                        if (int.TryParse(quantityPart, out int quantity))
+                        {
+                            blueprintUsages += quantity;
+                        }
+                        else
+                        {
+                            blueprintUsages++;
+                        }
+                    }
+                    else
+                    {
+                        blueprintUsages++;
+                    }
+                }
+            }
+
+            // 生成获得物品详情
+            StringBuilder acquiredDetails = new StringBuilder();
+            acquiredDetails.AppendLine("总数：" + acquiredItems.Values.Sum());
+            int displayCount = 0;
+            foreach (var item in acquiredItems)
+            {
+                if (displayCount < 5) // 最多显示5种物品
+                    acquiredDetails.AppendLine(item.Key + "×" + item.Value);
+                displayCount++;
+            }
+            if (acquiredItems.Count > 5)
+            {
+                acquiredDetails.AppendLine("...等" + acquiredItems.Count + "种物品");
+            }
+
+            // 生成消耗物品详情
+            StringBuilder consumedDetails = new StringBuilder();
+            consumedDetails.AppendLine("总数：" + consumedItems.Values.Sum());
+            displayCount = 0;
+            foreach (var item in consumedItems)
+            {
+                if (displayCount < 5) // 最多显示5种物品
+                    consumedDetails.AppendLine(item.Key + "×" + item.Value);
+                displayCount++;
+            }
+            if (consumedItems.Count > 5)
+            {
+                consumedDetails.AppendLine("...等" + consumedItems.Count + "种物品");
+            }
+
+            // 生成副本参与详情
+            StringBuilder dungeonDetails = new StringBuilder();
+            dungeonDetails.Append("参与副本：" + dungeonParticipations + "次");
+
+            // 生成蓝图使用详情
+            StringBuilder blueprintDetails = new StringBuilder();
+            blueprintDetails.Append("使用蓝图：" + blueprintUsages + "次");
+
+            // 更新标签文本
+            Label acquiredItemsLabel = 统计标签页.Controls.Find("acquiredItemsLabel", true).FirstOrDefault() as Label;
+            if (acquiredItemsLabel != null)
+                acquiredItemsLabel.Text = acquiredDetails.ToString();
+
+            Label consumedItemsLabel = 统计标签页.Controls.Find("consumedItemsLabel", true).FirstOrDefault() as Label;
+            if (consumedItemsLabel != null)
+                consumedItemsLabel.Text = consumedDetails.ToString();
+
+            Label dungeonParticipationLabel = 统计标签页.Controls.Find("dungeonParticipationLabel", true).FirstOrDefault() as Label;
+            if (dungeonParticipationLabel != null)
+                dungeonParticipationLabel.Text = dungeonDetails.ToString();
+
+            Label blueprintUsageLabel = 统计标签页.Controls.Find("blueprintUsageLabel", true).FirstOrDefault() as Label;
+            if (blueprintUsageLabel != null)
+                blueprintUsageLabel.Text = blueprintDetails.ToString();
+        }
+
+        // 清空统计标签文本
+        private void ClearStatisticsLabels()
+        {
+            Label acquiredItemsLabel = 统计标签页.Controls.Find("acquiredItemsLabel", true).FirstOrDefault() as Label;
+            if (acquiredItemsLabel != null)
+                acquiredItemsLabel.Text = "总数：0";
+
+            Label consumedItemsLabel = 统计标签页.Controls.Find("consumedItemsLabel", true).FirstOrDefault() as Label;
+            if (consumedItemsLabel != null)
+                consumedItemsLabel.Text = "总数：0";
+
+            Label dungeonParticipationLabel = 统计标签页.Controls.Find("dungeonParticipationLabel", true).FirstOrDefault() as Label;
+            if (dungeonParticipationLabel != null)
+                dungeonParticipationLabel.Text = "参与副本：0次";
+
+            Label blueprintUsageLabel = 统计标签页.Controls.Find("blueprintUsageLabel", true).FirstOrDefault() as Label;
+            if (blueprintUsageLabel != null)
+                blueprintUsageLabel.Text = "使用蓝图：0次";
+        }
+
         private void 分类标签控件_SelectedIndexChanged(object sender, EventArgs e)
         {
             // 确保各标签页初始化时只创建一次内容
             if (分类标签控件.SelectedTab == 总览标签页 && 总览标签页.Controls.Count == 0)
             {
                 Initialize总览标签页();
+            }
+            else if (分类标签控件.SelectedTab == 统计标签页 && 统计标签页.Controls.Count == 0)
+            {
+                Initialize统计标签页();
+                // 初始化后立即更新统计数据
+                UpdateStatistics(null);
             }
             else if (分类标签控件.SelectedTab == 事件标签页 && 事件标签页.Controls.Count == 0)
             {
@@ -299,6 +844,9 @@ namespace FirstACity
             dungeonDataGridView.Columns.Add(obtainedItemsColumn);
             dungeonDataGridView.Columns.Add(descColumn);
             
+            // 初始化预设副本数据
+            PresetDataManager.InitializeDungeons(dungeonDataGridView);
+            
             // 添加到面板
             listPanel.Controls.Add(dungeonDataGridView);
             
@@ -389,7 +937,7 @@ namespace FirstACity
                 consumedXLabels[i] = new Label { Text = "x", Location = new Point(260, yPos), AutoSize = true };
                 addDungeonForm.Controls.Add(consumedXLabels[i]);
                 
-                consumedQuantityComboBoxes[i] = new ComboBox { Location = new Point(270, yPos), Size = new Size(100, 25), DropDownStyle = ComboBoxStyle.DropDownList };
+                consumedQuantityComboBoxes[i] = new ComboBox { Location = new Point(270, yPos), Size = new Size(100, 25), DropDownStyle = ComboBoxStyle.DropDown };
                 // 添加1-10的数量选项
                 for (int j = 1; j <= 10; j++)
                 {
@@ -558,7 +1106,7 @@ namespace FirstACity
                     obtainedXLabels[i] = new Label { Text = "x", Location = new Point(260, currentYPos), AutoSize = true };
                     addDungeonForm.Controls.Add(obtainedXLabels[i]);
                     
-                    obtainedQuantityComboBoxes[i] = new ComboBox { Location = new Point(270, currentYPos), Size = new Size(100, 25), DropDownStyle = ComboBoxStyle.DropDownList };
+                    obtainedQuantityComboBoxes[i] = new ComboBox { Location = new Point(270, currentYPos), Size = new Size(100, 25), DropDownStyle = ComboBoxStyle.DropDown };
                     for (int j = 1; j <= 10; j++)
                     {
                         obtainedQuantityComboBoxes[i].Items.Add(j.ToString());
@@ -644,7 +1192,15 @@ namespace FirstACity
                     {
                         if (consumedItemTextBoxes[i] != null && !string.IsNullOrWhiteSpace(consumedItemTextBoxes[i].Text))
                         {
-                            string itemInfo = $"{consumedItemTextBoxes[i].Text}x{consumedQuantityComboBoxes[i].SelectedItem}";
+                            // 验证数量输入
+                            string quantityText = consumedQuantityComboBoxes[i].Text.Trim();
+                            if (!int.TryParse(quantityText, out int quantity) || quantity <= 0)
+                            {
+                                MessageBox.Show($"消耗物品{i + 1}的数量必须是大于0的整数！", "输入验证", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                return;
+                            }
+                            
+                            string itemInfo = $"{consumedItemTextBoxes[i].Text}x{quantity}";
                             if (consumedItemsBuilder.Length > 0)
                                 consumedItemsBuilder.Append("、");
                             consumedItemsBuilder.Append(itemInfo);
@@ -656,7 +1212,15 @@ namespace FirstACity
                     {
                         if (obtainedItemTextBoxes[i] != null && !string.IsNullOrWhiteSpace(obtainedItemTextBoxes[i].Text))
                         {
-                            string itemInfo = $"{obtainedItemTextBoxes[i].Text}x{obtainedQuantityComboBoxes[i].SelectedItem}";
+                            // 验证数量输入
+                            string quantityText = obtainedQuantityComboBoxes[i].Text.Trim();
+                            if (!int.TryParse(quantityText, out int quantity) || quantity <= 0)
+                            {
+                                MessageBox.Show($"获得物品{i + 1}的数量必须是大于0的整数！", "输入验证", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                return;
+                            }
+                            
+                            string itemInfo = $"{obtainedItemTextBoxes[i].Text}x{quantity}";
                             if (obtainedItemsBuilder.Length > 0)
                                 obtainedItemsBuilder.Append("、");
                             obtainedItemsBuilder.Append(itemInfo);
@@ -697,7 +1261,7 @@ namespace FirstACity
                                     
                                     foreach (DataGridViewRow warehouseRow in warehouseGrid.Rows)
                                     {
-                                        if (warehouseRow.Cells["Name"]?.Value?.ToString()?.Trim() == itemName)
+                                        if (warehouseRow.Cells["nameColumn"]?.Value?.ToString()?.Trim() == itemName)
                                         {
                                             itemExists = true;
                                             break;
@@ -721,7 +1285,7 @@ namespace FirstACity
                                     
                                     foreach (DataGridViewRow warehouseRow in warehouseGrid.Rows)
                                     {
-                                        if (warehouseRow.Cells["Name"]?.Value?.ToString()?.Trim() == itemName)
+                                        if (warehouseRow.Cells["nameColumn"]?.Value?.ToString()?.Trim() == itemName)
                                         {
                                             itemExists = true;
                                             break;
@@ -774,7 +1338,7 @@ namespace FirstACity
                                         bool alreadyExists = false;
                                         foreach (DataGridViewRow row in currentWarehouseGrid.Rows)
                                         {
-                                            if (row.Cells["Name"]?.Value?.ToString()?.Trim() == missingItem)
+                                            if (row.Cells["nameColumn"]?.Value?.ToString()?.Trim() == missingItem)
                                             {
                                                 alreadyExists = true;
                                                 break;
@@ -917,36 +1481,75 @@ namespace FirstACity
                     }
                 }
                 
-                // 副本消耗物品输入（10行）
+                // 副本消耗物品输入
                 Label consumedLabel = new Label { Text = "副本消耗物品:", Location = new Point(20, yPos), AutoSize = true };
                 modifyDungeonForm.Controls.Add(consumedLabel);
+                
+                // 添加行数选择下拉菜单
+                ComboBox consumedRowCountComboBox = new ComboBox { Location = new Point(120, yPos - 5), Size = new Size(60, 25), DropDownStyle = ComboBoxStyle.DropDownList };
+                for (int j = 1; j <= 10; j++)
+                {
+                    consumedRowCountComboBox.Items.Add(j.ToString());
+                }
+                
+                // 计算当前有多少个非空的消耗物品，作为默认行数
+                int currentConsumedRows = 3; // 默认3行
+                for (int i = 9; i >= 0; i--)
+                {
+                    if (!string.IsNullOrEmpty(consumedItems[i]))
+                    {
+                        currentConsumedRows = i + 1;
+                        break;
+                    }
+                }
+                consumedRowCountComboBox.SelectedIndex = Math.Min(currentConsumedRows - 1, 9); // 确保不超出索引范围
+                modifyDungeonForm.Controls.Add(consumedRowCountComboBox);
+                
+                Label consumedRowCountLabel = new Label { Text = "行", Location = new Point(190, yPos), AutoSize = true };
+                modifyDungeonForm.Controls.Add(consumedRowCountLabel);
+                
                 yPos += 35;
                 
-                // 创建10行物品输入
-                TextBox[] consumedItemTextBoxes = new TextBox[10];
+                // 先声明所有需要的控件变量
+                TextBox[] consumedItemTextBoxes = new TextBox[10]; // 最多10行
                 ComboBox[] consumedQuantityComboBoxes = new ComboBox[10];
+                Label[] consumedItemLabels = new Label[10];
+                Label[] consumedXLabels = new Label[10];
                 
-                for (int i = 0; i < 10; i++)
+                // 提前声明描述框和获得物品部分的控件变量
+                Label descLabel = new Label();
+                TextBox descTextBox = new TextBox();
+                Label obtainedLabel = new Label();
+                ComboBox obtainedRowCountComboBox = new ComboBox();
+                Label obtainedRowCountLabel = new Label();
+                TextBox[] obtainedItemTextBoxes = new TextBox[10]; // 最多10行
+                ComboBox[] obtainedQuantityComboBoxes = new ComboBox[10];
+                Label[] obtainedItemLabels = new Label[10];
+                Label[] obtainedXLabels = new Label[10];
+                
+                // 动态创建初始消耗物品输入行
+                for (int i = 0; i < currentConsumedRows; i++)
                 {
-                    Label itemLabel = new Label { Text = $"物品 {i + 1}:", Location = new Point(40, yPos), AutoSize = true };
-                    modifyDungeonForm.Controls.Add(itemLabel);
+                    consumedItemLabels[i] = new Label { Text = $"物品 {i + 1}:", Location = new Point(40, yPos), AutoSize = true };
+                    modifyDungeonForm.Controls.Add(consumedItemLabels[i]);
                     
                     consumedItemTextBoxes[i] = new TextBox { Location = new Point(100, yPos), Size = new Size(150, 25), Text = consumedItems[i] ?? "" };
                     modifyDungeonForm.Controls.Add(consumedItemTextBoxes[i]);
                     
-                    Label xLabel = new Label { Text = "x", Location = new Point(260, yPos), AutoSize = true };
-                    modifyDungeonForm.Controls.Add(xLabel);
+                    consumedXLabels[i] = new Label { Text = "x", Location = new Point(260, yPos), AutoSize = true };
+                    modifyDungeonForm.Controls.Add(consumedXLabels[i]);
                     
-                    consumedQuantityComboBoxes[i] = new ComboBox { Location = new Point(270, yPos), Size = new Size(100, 25), DropDownStyle = ComboBoxStyle.DropDownList };
+                    consumedQuantityComboBoxes[i] = new ComboBox { Location = new Point(270, yPos), Size = new Size(100, 25), DropDownStyle = ComboBoxStyle.DropDown };
                     // 添加1-10的数量选项
                     for (int j = 1; j <= 10; j++)
                     {
                         consumedQuantityComboBoxes[i].Items.Add(j.ToString());
                     }
                     // 设置当前数量
-                    if (!string.IsNullOrEmpty(consumedQuantities[i]) && int.TryParse(consumedQuantities[i], out int currentQuantity) && currentQuantity >= 1 && currentQuantity <= 10)
+                    if (!string.IsNullOrEmpty(consumedQuantities[i]))
                     {
-                        consumedQuantityComboBoxes[i].SelectedIndex = currentQuantity - 1;
+                        // 直接设置Text属性以支持大于10的值
+                        consumedQuantityComboBoxes[i].Text = consumedQuantities[i];
                     }
                     else
                     {
@@ -957,36 +1560,58 @@ namespace FirstACity
                     yPos += 30;
                 }
                 
-                // 副本获得物品输入（10行）
-                Label obtainedLabel = new Label { Text = "副本获得物品:", Location = new Point(20, yPos), AutoSize = true };
+                // 副本获得物品输入
+                obtainedLabel = new Label { Text = "副本获得物品:", Location = new Point(20, yPos), AutoSize = true };
                 modifyDungeonForm.Controls.Add(obtainedLabel);
+                
+                // 添加行数选择下拉菜单
+                obtainedRowCountComboBox = new ComboBox { Location = new Point(120, yPos - 5), Size = new Size(60, 25), DropDownStyle = ComboBoxStyle.DropDownList };
+                for (int j = 1; j <= 10; j++)
+                {
+                    obtainedRowCountComboBox.Items.Add(j.ToString());
+                }
+                
+                // 计算当前有多少个非空的获得物品，作为默认行数
+                int currentObtainedRows = 3; // 默认3行
+                for (int i = 9; i >= 0; i--)
+                {
+                    if (!string.IsNullOrEmpty(obtainedItems[i]))
+                    {
+                        currentObtainedRows = i + 1;
+                        break;
+                    }
+                }
+                obtainedRowCountComboBox.SelectedIndex = Math.Min(currentObtainedRows - 1, 9); // 确保不超出索引范围
+                modifyDungeonForm.Controls.Add(obtainedRowCountComboBox);
+                
+                obtainedRowCountLabel = new Label { Text = "行", Location = new Point(190, yPos), AutoSize = true };
+                modifyDungeonForm.Controls.Add(obtainedRowCountLabel);
+                
                 yPos += 35;
                 
-                // 创建10行物品输入
-                TextBox[] obtainedItemTextBoxes = new TextBox[10];
-                ComboBox[] obtainedQuantityComboBoxes = new ComboBox[10];
-                
-                for (int i = 0; i < 10; i++)
+                // 动态创建初始获得物品输入行
+                for (int i = 0; i < currentObtainedRows; i++)
                 {
-                    Label itemLabel = new Label { Text = $"物品 {i + 1}:", Location = new Point(40, yPos), AutoSize = true };
-                    modifyDungeonForm.Controls.Add(itemLabel);
+                    obtainedItemLabels[i] = new Label { Text = $"物品 {i + 1}:", Location = new Point(40, yPos), AutoSize = true };
+                    modifyDungeonForm.Controls.Add(obtainedItemLabels[i]);
                     
                     obtainedItemTextBoxes[i] = new TextBox { Location = new Point(100, yPos), Size = new Size(150, 25), Text = obtainedItems[i] ?? "" };
                     modifyDungeonForm.Controls.Add(obtainedItemTextBoxes[i]);
                     
-                    Label xLabel = new Label { Text = "x", Location = new Point(260, yPos), AutoSize = true };
-                    modifyDungeonForm.Controls.Add(xLabel);
+                    obtainedXLabels[i] = new Label { Text = "x", Location = new Point(260, yPos), AutoSize = true };
+                    modifyDungeonForm.Controls.Add(obtainedXLabels[i]);
                     
-                    obtainedQuantityComboBoxes[i] = new ComboBox { Location = new Point(270, yPos), Size = new Size(100, 25), DropDownStyle = ComboBoxStyle.DropDownList };
+                    obtainedQuantityComboBoxes[i] = new ComboBox { Location = new Point(270, yPos), Size = new Size(100, 25), DropDownStyle = ComboBoxStyle.DropDown };
                     // 添加1-10的数量选项
                     for (int j = 1; j <= 10; j++)
                     {
                         obtainedQuantityComboBoxes[i].Items.Add(j.ToString());
                     }
                     // 设置当前数量
-                    if (!string.IsNullOrEmpty(obtainedQuantities[i]) && int.TryParse(obtainedQuantities[i], out int currentQuantity) && currentQuantity >= 1 && currentQuantity <= 10)
+                    if (!string.IsNullOrEmpty(obtainedQuantities[i]))
                     {
-                        obtainedQuantityComboBoxes[i].SelectedIndex = currentQuantity - 1;
+                        // 直接设置Text属性以支持大于10的值
+                        obtainedQuantityComboBoxes[i].Text = obtainedQuantities[i];
                     }
                     else
                     {
@@ -997,22 +1622,215 @@ namespace FirstACity
                     yPos += 30;
                 }
                 
-                // 描述输入
-                Label descLabel = new Label { Text = "描述:", Location = new Point(20, yPos), AutoSize = true };
-                TextBox descTextBox = new TextBox { Location = new Point(100, yPos), Size = new Size(350, 100), Multiline = true, ScrollBars = ScrollBars.Vertical };
+                // 为消耗物品行数选择下拉菜单添加事件处理
+                consumedRowCountComboBox.SelectedIndexChanged += (s, args) =>
+                {
+                    int selectedRows = int.Parse(consumedRowCountComboBox.SelectedItem.ToString());
+                    int currentYPos = consumedRowCountLabel.Bottom + 10;
+                    
+                    // 移除所有物品输入行
+                    for (int i = 0; i < 10; i++)
+                    {
+                        if (consumedItemLabels[i] != null) modifyDungeonForm.Controls.Remove(consumedItemLabels[i]);
+                        if (consumedItemTextBoxes[i] != null) modifyDungeonForm.Controls.Remove(consumedItemTextBoxes[i]);
+                        if (consumedXLabels[i] != null) modifyDungeonForm.Controls.Remove(consumedXLabels[i]);
+                        if (consumedQuantityComboBoxes[i] != null) modifyDungeonForm.Controls.Remove(consumedQuantityComboBoxes[i]);
+                    }
+                    
+                    // 重新创建选中数量的物品输入行
+                    for (int i = 0; i < selectedRows; i++)
+                    {
+                        consumedItemLabels[i] = new Label { Text = $"物品 {i + 1}:", Location = new Point(40, currentYPos), AutoSize = true };
+                        modifyDungeonForm.Controls.Add(consumedItemLabels[i]);
+                        
+                        consumedItemTextBoxes[i] = new TextBox { Location = new Point(100, currentYPos), Size = new Size(150, 25), Text = consumedItems[i] ?? "" };
+                        modifyDungeonForm.Controls.Add(consumedItemTextBoxes[i]);
+                        
+                        consumedXLabels[i] = new Label { Text = "x", Location = new Point(260, currentYPos), AutoSize = true };
+                        modifyDungeonForm.Controls.Add(consumedXLabels[i]);
+                        
+                        consumedQuantityComboBoxes[i] = new ComboBox { Location = new Point(270, currentYPos), Size = new Size(100, 25), DropDownStyle = ComboBoxStyle.DropDown };
+                        for (int j = 1; j <= 10; j++)
+                        {
+                            consumedQuantityComboBoxes[i].Items.Add(j.ToString());
+                        }
+                        if (!string.IsNullOrEmpty(consumedQuantities[i]))
+                        {
+                            consumedQuantityComboBoxes[i].Text = consumedQuantities[i];
+                        }
+                        else
+                        {
+                            consumedQuantityComboBoxes[i].SelectedIndex = 0;
+                        }
+                        modifyDungeonForm.Controls.Add(consumedQuantityComboBoxes[i]);
+                        
+                        currentYPos += 30;
+                    }
+                    
+                    // 更新yPos并重新排列获得物品部分
+                    yPos = currentYPos;
+                    
+                    // 重新定位副本获得物品标签和行数选择
+                    obtainedLabel.Location = new Point(20, yPos);
+                    obtainedRowCountComboBox.Location = new Point(120, yPos - 5);
+                    obtainedRowCountLabel.Location = new Point(190, yPos);
+                    
+                    // 重新计算并创建获得物品输入行
+                    yPos += 35;
+                    int obtainedRows = int.Parse(obtainedRowCountComboBox.SelectedItem.ToString());
+                    
+                    // 移除所有获得物品输入行
+                    for (int i = 0; i < 10; i++)
+                    {
+                        if (obtainedItemLabels[i] != null) modifyDungeonForm.Controls.Remove(obtainedItemLabels[i]);
+                        if (obtainedItemTextBoxes[i] != null) modifyDungeonForm.Controls.Remove(obtainedItemTextBoxes[i]);
+                        if (obtainedXLabels[i] != null) modifyDungeonForm.Controls.Remove(obtainedXLabels[i]);
+                        if (obtainedQuantityComboBoxes[i] != null) modifyDungeonForm.Controls.Remove(obtainedQuantityComboBoxes[i]);
+                    }
+                    
+                    // 重新创建获得物品输入行
+                    int obtainedYPos = yPos;
+                    for (int i = 0; i < obtainedRows; i++)
+                    {
+                        obtainedItemLabels[i] = new Label { Text = $"物品 {i + 1}:", Location = new Point(40, obtainedYPos), AutoSize = true };
+                        modifyDungeonForm.Controls.Add(obtainedItemLabels[i]);
+                        
+                        obtainedItemTextBoxes[i] = new TextBox { Location = new Point(100, obtainedYPos), Size = new Size(150, 25), Text = obtainedItems[i] ?? "" };
+                        modifyDungeonForm.Controls.Add(obtainedItemTextBoxes[i]);
+                        
+                        obtainedXLabels[i] = new Label { Text = "x", Location = new Point(260, obtainedYPos), AutoSize = true };
+                        modifyDungeonForm.Controls.Add(obtainedXLabels[i]);
+                        
+                        obtainedQuantityComboBoxes[i] = new ComboBox { Location = new Point(270, obtainedYPos), Size = new Size(100, 25), DropDownStyle = ComboBoxStyle.DropDown };
+                        for (int j = 1; j <= 10; j++)
+                        {
+                            obtainedQuantityComboBoxes[i].Items.Add(j.ToString());
+                        }
+                        if (!string.IsNullOrEmpty(obtainedQuantities[i]))
+                        {
+                            obtainedQuantityComboBoxes[i].Text = obtainedQuantities[i];
+                        }
+                        else
+                        {
+                            obtainedQuantityComboBoxes[i].SelectedIndex = 0;
+                        }
+                        modifyDungeonForm.Controls.Add(obtainedQuantityComboBoxes[i]);
+                        
+                        obtainedYPos += 30;
+                    }
+                    
+                    // 更新描述框位置
+                    yPos = obtainedYPos;
+                    
+                    // 动态调整窗口高度
+                    UpdateModifyFormHeight(modifyDungeonForm, yPos);
+                };
+                
+                // 为获得物品行数选择下拉菜单添加事件处理
+                obtainedRowCountComboBox.SelectedIndexChanged += (s, args) =>
+                {
+                    int selectedRows = int.Parse(obtainedRowCountComboBox.SelectedItem.ToString());
+                    int currentYPos = obtainedRowCountLabel.Bottom + 10;
+                    
+                    // 移除所有物品输入行
+                    for (int i = 0; i < 10; i++)
+                    {
+                        if (obtainedItemLabels[i] != null) modifyDungeonForm.Controls.Remove(obtainedItemLabels[i]);
+                        if (obtainedItemTextBoxes[i] != null) modifyDungeonForm.Controls.Remove(obtainedItemTextBoxes[i]);
+                        if (obtainedXLabels[i] != null) modifyDungeonForm.Controls.Remove(obtainedXLabels[i]);
+                        if (obtainedQuantityComboBoxes[i] != null) modifyDungeonForm.Controls.Remove(obtainedQuantityComboBoxes[i]);
+                    }
+                    
+                    // 重新创建选中数量的物品输入行
+                    for (int i = 0; i < selectedRows; i++)
+                    {
+                        obtainedItemLabels[i] = new Label { Text = $"物品 {i + 1}:", Location = new Point(40, currentYPos), AutoSize = true };
+                        modifyDungeonForm.Controls.Add(obtainedItemLabels[i]);
+                        
+                        obtainedItemTextBoxes[i] = new TextBox { Location = new Point(100, currentYPos), Size = new Size(150, 25), Text = obtainedItems[i] ?? "" };
+                        modifyDungeonForm.Controls.Add(obtainedItemTextBoxes[i]);
+                        
+                        obtainedXLabels[i] = new Label { Text = "x", Location = new Point(260, currentYPos), AutoSize = true };
+                        modifyDungeonForm.Controls.Add(obtainedXLabels[i]);
+                        
+                        obtainedQuantityComboBoxes[i] = new ComboBox { Location = new Point(270, currentYPos), Size = new Size(100, 25), DropDownStyle = ComboBoxStyle.DropDown };
+                        for (int j = 1; j <= 10; j++)
+                        {
+                            obtainedQuantityComboBoxes[i].Items.Add(j.ToString());
+                        }
+                        if (!string.IsNullOrEmpty(obtainedQuantities[i]))
+                        {
+                            obtainedQuantityComboBoxes[i].Text = obtainedQuantities[i];
+                        }
+                        else
+                        {
+                            obtainedQuantityComboBoxes[i].SelectedIndex = 0;
+                        }
+                        modifyDungeonForm.Controls.Add(obtainedQuantityComboBoxes[i]);
+                        
+                        currentYPos += 30;
+                    }
+                    
+                    // 更新yPos为当前位置
+                    yPos = currentYPos;
+                    
+                    // 动态调整窗口高度
+                    UpdateModifyFormHeight(modifyDungeonForm, yPos);
+                };
+                
+                // 动态调整修改副本窗口高度的方法
+                void UpdateModifyFormHeight(Form form, int currentYPos)
+                {
+                    // 重新定位描述框
+                    descLabel.Location = new Point(20, currentYPos);
+                    descTextBox.Location = new Point(100, currentYPos);
+                    
+                    // 计算新高度
+                    int newHeight = currentYPos + 150 + 100; // 描述框高度 + 按钮面板高度 + 额外间距
+                    
+                    // 确保最小高度
+                    if (newHeight < 500) newHeight = 500;
+                    
+                    form.Size = new Size(form.Width, newHeight);
+                    
+                    // 重新定位按钮面板
+                    if (form.Controls.ContainsKey("buttonPanel"))
+                    {
+                        // 安全地获取并转换控件
+                        Control control = form.Controls["buttonPanel"];
+                        if (control is FlowLayoutPanel)
+                        {
+                            FlowLayoutPanel panel = (FlowLayoutPanel)control;
+                            // 设置合适的位置，确保在表单底部
+                            panel.Location = new Point(10, newHeight - 100);
+                        }
+                    }
+                }
+                
+                // 创建按钮面板
+                FlowLayoutPanel buttonPanel = new FlowLayoutPanel
+                {
+                    Name = "buttonPanel", // 设置名称以便在UpdateFormHeight中查找
+                    FlowDirection = FlowDirection.RightToLeft,
+                    Dock = DockStyle.Bottom,
+                    Padding = new Padding(10, 10, 10, 10),
+                    Height = 60
+                };
+                
+                // 描述输入 - 使用之前已经声明的变量，设置属性和内容
+                descLabel.Text = "副本描述:";
+                descLabel.Location = new Point(20, yPos);
+                descLabel.AutoSize = true;
+                descTextBox.Location = new Point(100, yPos);
+                descTextBox.Size = new Size(350, 100);
                 descTextBox.Text = selectedRow.Cells["descColumn"].Value?.ToString() ?? "";
+                descTextBox.Multiline = true;
                 modifyDungeonForm.Controls.Add(descLabel);
                 modifyDungeonForm.Controls.Add(descTextBox);
                 yPos += 110;
                 
-                // 确定和取消按钮
-                FlowLayoutPanel buttonPanel = new FlowLayoutPanel
-                {
-                    FlowDirection = FlowDirection.RightToLeft,
-                    Location = new Point(0, 570),
-                    Size = new Size(485, 40),
-                    Padding = new Padding(10, 5, 10, 5)
-                };
+                // 初始化时就调用UpdateModifyFormHeight方法，确保默认布局与修改行数后的布局一致
+                UpdateModifyFormHeight(modifyDungeonForm, yPos);
                 
                 Button okButton = new Button { Text = "确定", Size = new Size(75, 30) };
                 Button cancelButton = new Button { Text = "取消", Size = new Size(75, 30), DialogResult = DialogResult.Cancel };
@@ -1028,7 +1846,15 @@ namespace FirstACity
                     {
                         if (!string.IsNullOrWhiteSpace(consumedItemTextBoxes[i].Text))
                         {
-                            string itemInfo = $"{consumedItemTextBoxes[i].Text}x{consumedQuantityComboBoxes[i].SelectedItem}";
+                            // 验证数量输入
+                            string quantityText = consumedQuantityComboBoxes[i].Text.Trim();
+                            if (!int.TryParse(quantityText, out int quantity) || quantity <= 0)
+                            {
+                                MessageBox.Show($"消耗物品{i + 1}的数量必须是大于0的整数！", "输入验证", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                return;
+                            }
+                            
+                            string itemInfo = $"{consumedItemTextBoxes[i].Text}x{quantity}";
                             if (consumedItemsBuilder.Length > 0)
                                 consumedItemsBuilder.Append("、");
                             consumedItemsBuilder.Append(itemInfo);
@@ -1040,7 +1866,15 @@ namespace FirstACity
                     {
                         if (!string.IsNullOrWhiteSpace(obtainedItemTextBoxes[i].Text))
                         {
-                            string itemInfo = $"{obtainedItemTextBoxes[i].Text}x{obtainedQuantityComboBoxes[i].SelectedItem}";
+                            // 验证数量输入
+                            string quantityText = obtainedQuantityComboBoxes[i].Text.Trim();
+                            if (!int.TryParse(quantityText, out int quantity) || quantity <= 0)
+                            {
+                                MessageBox.Show($"获得物品{i + 1}的数量必须是大于0的整数！", "输入验证", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                return;
+                            }
+                            
+                            string itemInfo = $"{obtainedItemTextBoxes[i].Text}x{quantity}";
                             if (obtainedItemsBuilder.Length > 0)
                                 obtainedItemsBuilder.Append("、");
                             obtainedItemsBuilder.Append(itemInfo);
@@ -1081,7 +1915,7 @@ namespace FirstACity
                                 
                                 foreach (DataGridViewRow warehouseRow in warehouseGrid.Rows)
                                 {
-                                    if (warehouseRow.Cells["Name"]?.Value?.ToString()?.Trim() == itemName)
+                                    if (warehouseRow.Cells["nameColumn"]?.Value?.ToString()?.Trim() == itemName)
                                     {
                                         itemExists = true;
                                         break;
@@ -1105,7 +1939,7 @@ namespace FirstACity
                                 
                                 foreach (DataGridViewRow warehouseRow in warehouseGrid.Rows)
                                 {
-                                    if (warehouseRow.Cells["Name"]?.Value?.ToString()?.Trim() == itemName)
+                                    if (warehouseRow.Cells["nameColumn"]?.Value?.ToString()?.Trim() == itemName)
                                     {
                                         itemExists = true;
                                         break;
@@ -1554,25 +2388,20 @@ namespace FirstACity
                 
                 // 检查是否选择了蓝图
                 if (blueprintComboBox.SelectedIndex > 0)
-                {
-                    string selectedBlueprintName = blueprintComboBox.SelectedItem.ToString();
-                    for (int i = 0; i < blueprintQuantity; i++)
-                    {
-                        bool canUseBlueprint = CheckBlueprintMaterials(selectedBlueprintName);
-                        
-                        if (!canUseBlueprint)
                         {
-                            MessageBox.Show("仓库中物品不足，无法使用该蓝图！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            return;
+                            string selectedBlueprintName = blueprintComboBox.SelectedItem.ToString();
+                            // 使用带数量参数的方法，直接检查所有次数所需的材料
+                            bool canUseBlueprint = CheckBlueprintMaterials(selectedBlueprintName, blueprintQuantity);
+                            
+                            if (!canUseBlueprint)
+                            {
+                                MessageBox.Show("仓库中物品不足，无法使用该蓝图！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                return;
+                            }
+                            
+                            // 消耗蓝图所需物品，使用带数量参数的方法
+                            ConsumeBlueprintMaterials(selectedBlueprintName, blueprintQuantity);
                         }
-                    }
-                    
-                    // 消耗蓝图所需物品
-                    for (int i = 0; i < blueprintQuantity; i++)
-                    {
-                        ConsumeBlueprintMaterials(selectedBlueprintName);
-                    }
-                }
                 
                 // 检查是否选择了副本并验证仓库物品
                 if (dungeonComboBox.SelectedIndex > 0)
@@ -1694,17 +2523,12 @@ namespace FirstACity
                             {
                                 if (dungeonRow.Cells["nameColumn"].Value?.ToString() == selectedDungeonName)
                                 {
-                                    // 处理副本消耗和获得的物品
-                                    for (int i = 0; i < dungeonQuantity; i++)
-                                    {
-                                        // 消耗物品
-                                        string consumedItems = dungeonRow.Cells["consumedItemsColumn"].Value?.ToString() ?? "";
-                                        ProcessDungeonItems(consumedItems, false); // false表示减少
-                                        
-                                        // 获得物品
-                                        string obtainedItems = dungeonRow.Cells["obtainedItemsColumn"].Value?.ToString() ?? "";
-                                        ProcessDungeonItems(obtainedItems, true); // true表示增加
-                                    }
+                                    // 处理副本消耗和获得的物品，传递次数参数
+                                    string consumedItems = dungeonRow.Cells["consumedItemsColumn"].Value?.ToString() ?? "";
+                                    ProcessDungeonItems(consumedItems, false, dungeonQuantity); // false表示减少，传递次数
+                                    
+                                    string obtainedItems = dungeonRow.Cells["obtainedItemsColumn"].Value?.ToString() ?? "";
+                                    ProcessDungeonItems(obtainedItems, true, dungeonQuantity); // true表示增加，传递次数
                                     break;
                                 }
                             }
@@ -1809,7 +2633,7 @@ namespace FirstACity
         }
         
         // 处理副本中的物品（消耗或获得）
-        private void ProcessDungeonItems(string itemsInfo, bool isIncrease)
+        private void ProcessDungeonItems(string itemsInfo, bool isIncrease, int times = 1)
         {
             if (string.IsNullOrEmpty(itemsInfo))
                 return;
@@ -1831,6 +2655,7 @@ namespace FirstACity
                         string itemName = item.Substring(0, xIndex).Trim();
                         if (int.TryParse(item.Substring(xIndex + 1).Trim(), out int quantity))
                         {
+                            quantity *= times; // 乘以次数
                             bool itemFound = false;
                             
                             // 更新仓库中物品的数量
@@ -2522,7 +3347,7 @@ namespace FirstACity
                                 
                                 foreach (DataGridViewRow warehouseRow in warehouseGrid.Rows)
                                 {
-                                    if (warehouseRow.Cells["Name"]?.Value?.ToString()?.Trim() == itemName)
+                                    if (warehouseRow.Cells["nameColumn"]?.Value?.ToString()?.Trim() == itemName)
                                     {
                                         itemExists = true;
                                         break;
@@ -2887,8 +3712,8 @@ namespace FirstACity
             }
         }
         
-        // 检查蓝图所需材料是否足够
-        private bool CheckBlueprintMaterials(string blueprintName)
+        // 检查蓝图所需材料是否足够（支持数量参数）
+        private bool CheckBlueprintMaterials(string blueprintName, int quantity)
         {
             if (string.IsNullOrEmpty(blueprintName))
                 return true;
@@ -2928,6 +3753,9 @@ namespace FirstACity
                         if (!int.TryParse(material.Substring(xIndex + 1), out requiredQuantity))
                             continue;
                             
+                        // 计算总所需数量（单个蓝图所需数量 * 使用次数）
+                        int totalRequiredQuantity = requiredQuantity * quantity;
+                            
                         // 查找仓库中是否有足够的材料
                         bool hasEnough = false;
                         foreach (DataGridViewRow warehouseRow in warehouseDataGridView.Rows)
@@ -2937,7 +3765,7 @@ namespace FirstACity
                                 int currentQuantity = 0;
                                 if (int.TryParse(warehouseRow.Cells["quantityColumn"].Value?.ToString() ?? "0", out currentQuantity))
                                 {
-                                    if (currentQuantity >= requiredQuantity)
+                                    if (currentQuantity >= totalRequiredQuantity)
                                     {
                                         hasEnough = true;
                                     }
@@ -2959,8 +3787,20 @@ namespace FirstACity
             return false;
         }
         
-        // 消耗蓝图所需材料并生成物品
+        // 检查蓝图所需材料是否足够（默认数量为1）
+        private bool CheckBlueprintMaterials(string blueprintName)
+        {
+            return CheckBlueprintMaterials(blueprintName, 1);
+        }
+        
+        // 消耗蓝图所需材料并生成物品（默认数量为1）
         private void ConsumeBlueprintMaterials(string blueprintName)
+        {
+            ConsumeBlueprintMaterials(blueprintName, 1);
+        }
+        
+        // 消耗蓝图所需材料并生成物品（支持数量参数）
+        private void ConsumeBlueprintMaterials(string blueprintName, int quantity)
         {
             if (string.IsNullOrEmpty(blueprintName))
                 return;
@@ -2999,6 +3839,9 @@ namespace FirstACity
                             if (!int.TryParse(material.Substring(xIndex + 1), out requiredQuantity))
                                 continue;
                                 
+                            // 计算总所需数量（单个蓝图所需数量 * 使用次数）
+                            int totalRequiredQuantity = requiredQuantity * quantity;
+                                
                             // 在仓库中扣除材料
                             foreach (DataGridViewRow warehouseRow in warehouseDataGridView.Rows)
                             {
@@ -3007,7 +3850,7 @@ namespace FirstACity
                                     int currentQuantity = 0;
                                     if (int.TryParse(warehouseRow.Cells["quantityColumn"].Value?.ToString() ?? "0", out currentQuantity))
                                     {
-                                        warehouseRow.Cells["quantityColumn"].Value = Math.Max(0, currentQuantity - requiredQuantity);
+                                        warehouseRow.Cells["quantityColumn"].Value = Math.Max(0, currentQuantity - totalRequiredQuantity);
                                     }
                                     break;
                                 }
@@ -3034,6 +3877,9 @@ namespace FirstACity
                             if (!int.TryParse(material.Substring(xIndex + 1), out requiredQuantity))
                                 continue;
                                 
+                            // 计算总生成数量（单个蓝图生成数量 * 使用次数）
+                            int totalProducedQuantity = requiredQuantity * quantity;
+                                
                             // 在仓库中增加材料
                             bool found = false;
                             foreach (DataGridViewRow warehouseRow in warehouseDataGridView.Rows)
@@ -3043,7 +3889,7 @@ namespace FirstACity
                                     int currentQuantity = 0;
                                     if (int.TryParse(warehouseRow.Cells["quantityColumn"].Value?.ToString() ?? "0", out currentQuantity))
                                     {
-                                        warehouseRow.Cells["quantityColumn"].Value = currentQuantity + requiredQuantity;
+                                        warehouseRow.Cells["quantityColumn"].Value = currentQuantity + totalProducedQuantity;
                                     }
                                     found = true;
                                     break;
@@ -3168,24 +4014,47 @@ namespace FirstACity
                 string itemWithStatus = selectedRow.Cells["itemColumn"].Value?.ToString() ?? "";
                 string itemName = itemWithStatus;
                 string itemStatus = "增加"; // 默认增加
+                string itemQuantityStr = "1"; // 默认数量
                 
+                // 解析物品、状态和数量
                 if (itemWithStatus.Contains("("))
                 {
                     int startIndex = itemWithStatus.LastIndexOf('(');
                     int endIndex = itemWithStatus.LastIndexOf(')');
                     if (startIndex >= 0 && endIndex > startIndex)
                     {
-                        itemName = itemWithStatus.Substring(0, startIndex).Trim();
-                        string statusText = itemWithStatus.Substring(startIndex + 1, endIndex - startIndex - 1).Trim();
-                        if (statusText == "减少")
+                        // 检查是否有数量信息
+                        int xIndex = itemWithStatus.LastIndexOf('x');
+                        if (xIndex > endIndex)
                         {
-                            itemStatus = "减少";
+                            itemName = itemWithStatus.Substring(0, startIndex).Trim();
+                            string statusText = itemWithStatus.Substring(startIndex + 1, endIndex - startIndex - 1).Trim();
+                            if (statusText == "减少")
+                            {
+                                itemStatus = "减少";
+                            }
+                            // 提取数量
+                            itemQuantityStr = itemWithStatus.Substring(xIndex + 1).Trim();
+                        }
+                        else
+                        {
+                            itemName = itemWithStatus.Substring(0, startIndex).Trim();
+                            string statusText = itemWithStatus.Substring(startIndex + 1, endIndex - startIndex - 1).Trim();
+                            if (statusText == "减少")
+                            {
+                                itemStatus = "减少";
+                            }
                         }
                     }
                 }
                 
                 // 获取蓝图使用信息
                 string blueprintUsed = selectedRow.Cells["blueprintColumn"].Value?.ToString() ?? "无";
+                string blueprintQuantityStr = "1"; // 默认蓝图数量
+                
+                // 获取副本参与信息
+                string dungeonParticipated = selectedRow.Cells["dungeonColumn"].Value?.ToString() ?? "无";
+                string dungeonQuantityStr = "1"; // 默认副本次数
                 
                 // 创建修改事件窗口
                 Form editEventForm = new Form
@@ -3205,10 +4074,13 @@ namespace FirstACity
                 editEventForm.Controls.Add(chapterTextBox);
                 yPos += 30;
                 
-                // 使用蓝图下拉菜单
+                // 使用蓝图下拉菜单和数量输入
                 Label blueprintLabel = new Label { Text = "使用蓝图:", Location = new Point(20, yPos), AutoSize = true };
-                ComboBox blueprintComboBox = new ComboBox { Location = new Point(100, yPos), Size = new Size(350, 20), DropDownStyle = ComboBoxStyle.DropDownList };
+                ComboBox blueprintComboBox = new ComboBox { Location = new Point(100, yPos), Size = new Size(250, 20), DropDownStyle = ComboBoxStyle.DropDownList };
                 blueprintComboBox.Items.Add("无"); // 默认选项
+                
+                Label blueprintQuantityLabel = new Label { Text = "数量:", Location = new Point(360, yPos), AutoSize = true };
+                TextBox blueprintQuantityTextBox = new TextBox { Location = new Point(390, yPos), Size = new Size(60, 20), Text = blueprintQuantityStr };
                 
                 // 从配方蓝图标签页获取蓝图数据
                 DataGridView blueprintDataGridView = 配方蓝图标签页.Controls.Find("blueprintDataGridView", true).FirstOrDefault() as DataGridView;
@@ -3237,11 +4109,56 @@ namespace FirstACity
                 
                 editEventForm.Controls.Add(blueprintLabel);
                 editEventForm.Controls.Add(blueprintComboBox);
+                editEventForm.Controls.Add(blueprintQuantityLabel);
+                editEventForm.Controls.Add(blueprintQuantityTextBox);
                 yPos += 30;
                 
-                // 物品输入
+                // 参与副本下拉菜单和次数输入
+                Label dungeonLabel = new Label { Text = "参与副本:", Location = new Point(20, yPos), AutoSize = true };
+                ComboBox dungeonComboBox = new ComboBox { Location = new Point(100, yPos), Size = new Size(250, 20), DropDownStyle = ComboBoxStyle.DropDownList };
+                dungeonComboBox.Items.Add("无"); // 默认选项
+                
+                Label dungeonQuantityLabel = new Label { Text = "次数:", Location = new Point(360, yPos), AutoSize = true };
+                TextBox dungeonQuantityTextBox = new TextBox { Location = new Point(390, yPos), Size = new Size(60, 20), Text = dungeonQuantityStr };
+                
+                // 从副本标签页获取副本数据
+                DataGridView dungeonDataGridView = 副本标签页.Controls.Find("dungeonDataGridView", true).FirstOrDefault() as DataGridView;
+                if (dungeonDataGridView != null)
+                {
+                    foreach (DataGridViewRow row in dungeonDataGridView.Rows)
+                    {
+                        string dungeonName = row.Cells["nameColumn"].Value?.ToString() ?? "";
+                        if (!string.IsNullOrEmpty(dungeonName))
+                        {
+                            dungeonComboBox.Items.Add(dungeonName);
+                        }
+                    }
+                }
+                
+                // 设置选中的副本
+                int dungeonIndex = dungeonComboBox.FindStringExact(dungeonParticipated);
+                if (dungeonIndex >= 0)
+                {
+                    dungeonComboBox.SelectedIndex = dungeonIndex;
+                }
+                else
+                {
+                    dungeonComboBox.SelectedIndex = 0;
+                }
+                
+                editEventForm.Controls.Add(dungeonLabel);
+                editEventForm.Controls.Add(dungeonComboBox);
+                editEventForm.Controls.Add(dungeonQuantityLabel);
+                editEventForm.Controls.Add(dungeonQuantityTextBox);
+                yPos += 30;
+                
+                // 物品输入（改为可编辑的下拉列表）和数量输入
                 Label itemLabel = new Label { Text = "物品:", Location = new Point(20, yPos), AutoSize = true };
-                TextBox itemTextBox = new TextBox { Location = new Point(100, yPos), Size = new Size(250, 20), Text = itemName };
+                ComboBox itemComboBox = new ComboBox { Location = new Point(100, yPos), Size = new Size(150, 20), DropDownStyle = ComboBoxStyle.DropDown, Text = itemName };
+                
+                // 物品数量输入
+                Label itemQuantityLabel = new Label { Text = "数量:", Location = new Point(260, yPos), AutoSize = true };
+                TextBox itemQuantityTextBox = new TextBox { Location = new Point(290, yPos), Size = new Size(60, 20), Text = itemQuantityStr };
                 
                 // 物品状态选择（增加/减少）
                 Label itemStatusLabel = new Label { Text = "状态:", Location = new Point(360, yPos), AutoSize = true };
@@ -3249,8 +4166,24 @@ namespace FirstACity
                 itemStatusComboBox.Items.AddRange(new string[] { "增加", "减少" });
                 itemStatusComboBox.SelectedIndex = itemStatus == "减少" ? 1 : 0;
                 
+                // 从仓库获取物品数据填充下拉列表
+                DataGridView warehouseDataGridView = 仓库标签页.Controls.Find("warehouseGrid", true).FirstOrDefault() as DataGridView;
+                if (warehouseDataGridView != null)
+                {
+                    foreach (DataGridViewRow row in warehouseDataGridView.Rows)
+                    {
+                        string warehouseItemName = row.Cells[1].Value?.ToString() ?? "";
+                        if (!string.IsNullOrEmpty(warehouseItemName) && !itemComboBox.Items.Contains(warehouseItemName))
+                        {
+                            itemComboBox.Items.Add(warehouseItemName);
+                        }
+                    }
+                }
+                
                 editEventForm.Controls.Add(itemLabel);
-                editEventForm.Controls.Add(itemTextBox);
+                editEventForm.Controls.Add(itemComboBox);
+                editEventForm.Controls.Add(itemQuantityLabel);
+                editEventForm.Controls.Add(itemQuantityTextBox);
                 editEventForm.Controls.Add(itemStatusLabel);
                 editEventForm.Controls.Add(itemStatusComboBox);
                 yPos += 30;
@@ -3282,11 +4215,37 @@ namespace FirstACity
                 
                 okButton.Click += (s, args) =>
                 {
+                    // 验证数量输入
+                    int blueprintQuantity = 1;
+                    if (!int.TryParse(blueprintQuantityTextBox.Text, out blueprintQuantity) || blueprintQuantity < 1)
+                    {
+                        MessageBox.Show("蓝图数量必须为大于0的整数！", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    
+                    int dungeonQuantity = 1;
+                    if (!int.TryParse(dungeonQuantityTextBox.Text, out dungeonQuantity) || dungeonQuantity < 1)
+                    {
+                        MessageBox.Show("副本次数必须为大于0的整数！", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    
+                    int itemQuantity = 1;
+                    // 只有当物品名称不为空时才验证物品数量
+                    if (!string.IsNullOrEmpty(itemComboBox.Text.Trim()))
+                    {
+                        if (!int.TryParse(itemQuantityTextBox.Text, out itemQuantity) || itemQuantity < 1)
+                        {
+                            MessageBox.Show("物品数量必须为大于0的整数！", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                    }
+                    
                     // 检查是否选择了蓝图
                     if (blueprintComboBox.SelectedIndex > 0)
                     {
                         string selectedBlueprintName = blueprintComboBox.SelectedItem.ToString();
-                        bool canUseBlueprint = CheckBlueprintMaterials(selectedBlueprintName);
+                        bool canUseBlueprint = CheckBlueprintMaterials(selectedBlueprintName, blueprintQuantity);
                         
                         if (!canUseBlueprint)
                         {
@@ -3296,16 +4255,23 @@ namespace FirstACity
                         else
                         {
                             // 消耗蓝图所需物品
-                            ConsumeBlueprintMaterials(selectedBlueprintName);
+                            ConsumeBlueprintMaterials(selectedBlueprintName, blueprintQuantity);
                         }
                     }
                     
                     // 更新选中行的数据
                     selectedRow.Cells["chapterColumn"].Value = chapterTextBox.Text;
-                    selectedRow.Cells["itemColumn"].Value = $"{itemTextBox.Text} ({itemStatusComboBox.SelectedItem.ToString()})";
+                    
+                    // 构建物品信息（包含状态和数量）
+                    string itemInfo = !string.IsNullOrEmpty(itemComboBox.Text.Trim()) 
+                        ? $"{itemComboBox.Text} ({itemStatusComboBox.SelectedItem.ToString()})x{itemQuantity}"
+                        : "";
+                    
+                    selectedRow.Cells["itemColumn"].Value = itemInfo;
                     selectedRow.Cells["talentColumn"].Value = talentTextBox.Text;
                     selectedRow.Cells["descColumn"].Value = descTextBox.Text;
                     selectedRow.Cells["blueprintColumn"].Value = blueprintComboBox.SelectedIndex > 0 ? blueprintComboBox.SelectedItem.ToString() : "无";
+                    selectedRow.Cells["dungeonColumn"].Value = dungeonComboBox.SelectedIndex > 0 ? dungeonComboBox.SelectedItem.ToString() : "无";
                     
                     editEventForm.Close();
                 };

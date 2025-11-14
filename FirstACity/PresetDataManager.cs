@@ -27,6 +27,16 @@ namespace FirstACity
             public string ProducedMaterials;
             public string Description;
         }
+        
+        // 预设副本数据结构
+        public struct PresetDungeon
+        {
+            public string Name;
+            public int Level;
+            public string ConsumedItems;
+            public string ObtainedItems;
+            public string Description;
+        }
 
         /// <summary>
         /// 获取所有预设物品列表
@@ -35,8 +45,13 @@ namespace FirstACity
         {
             return new List<PresetItem>
             {
+                // 基础货币
+                new PresetItem { Name = "铜币", Level = 0, InitialQuantity = 10000, Description = "基础货币" },
+                new PresetItem { Name = "银币", Level = 0, InitialQuantity = 10000, Description = "基础货币" },
+                new PresetItem { Name = "金币", Level = 0, InitialQuantity = 10000, Description = "基础货币" },
+
                 // 0级矿物
-                new PresetItem { Name = "石矿", Level = 0, InitialQuantity = 0, Description = "基础矿物" },
+                new PresetItem { Name = "石矿", Level = 0, InitialQuantity = 10000, Description = "基础矿物" },
                 new PresetItem { Name = "煤矿", Level = 0, InitialQuantity = 0, Description = "基础矿物" },
                 new PresetItem { Name = "铜矿", Level = 0, InitialQuantity = 0, Description = "基础矿物" },
                 new PresetItem { Name = "铁矿", Level = 0, InitialQuantity = 0, Description = "基础矿物" },
@@ -64,6 +79,30 @@ namespace FirstACity
         {
             return new List<PresetBlueprint>
             {
+                new PresetBlueprint 
+                { 
+                    Name = "铸币-铜币", 
+                    Level = 0, 
+                    ConsumedMaterials = "铜矿x1", 
+                    ProducedMaterials = "铜币x10000", 
+                    Description = "将1个铜矿加工成10000个铜币"
+                },
+                new PresetBlueprint 
+                { 
+                    Name = "铸币-银币", 
+                    Level = 0, 
+                    ConsumedMaterials = "银矿x1", 
+                    ProducedMaterials = "银币x1000", 
+                    Description = "将1个银矿加工成1000个银币"
+                },
+                new PresetBlueprint 
+                { 
+                    Name = "铸币-金币", 
+                    Level = 0, 
+                    ConsumedMaterials = "金矿x1", 
+                    ProducedMaterials = "金币x100", 
+                    Description = "将1个金矿加工成100个金币"
+                },
                 new PresetBlueprint 
                 { 
                     Name = "石料加工", 
@@ -130,6 +169,24 @@ namespace FirstACity
                 }
             };
         }
+        
+        /// <summary>
+        /// 获取所有预设副本列表
+        /// </summary>
+        public static List<PresetDungeon> GetPresetDungeons()
+        {
+            return new List<PresetDungeon>
+            {
+                new PresetDungeon 
+                {
+                    Name = "矿洞",
+                    Level = 1,
+                    ConsumedItems = "可燃煤x3",
+                    ObtainedItems = "铜矿x10",
+                    Description = "初级矿洞副本，消耗可燃煤开采铜矿"
+                }
+            };
+        }
 
         /// <summary>
         /// 初始化仓库物品
@@ -177,6 +234,31 @@ namespace FirstACity
                     blueprint.ProducedMaterials,
                     blueprint.Description,
                     false // usedColumn，默认为未使用
+                );
+            }
+        }
+        
+        /// <summary>
+        /// 初始化副本数据
+        /// </summary>
+        /// <param name="dungeonDataGridView">副本DataGridView控件</param>
+        public static void InitializeDungeons(DataGridView dungeonDataGridView)
+        {
+            if (dungeonDataGridView == null)
+                return;
+
+            // 清空现有数据
+            dungeonDataGridView.Rows.Clear();
+
+            // 添加预设副本
+            foreach (var dungeon in GetPresetDungeons())
+            {
+                dungeonDataGridView.Rows.Add(
+                    dungeon.Level.ToString(),
+                    dungeon.Name,
+                    dungeon.ConsumedItems,
+                    dungeon.ObtainedItems,
+                    dungeon.Description
                 );
             }
         }
